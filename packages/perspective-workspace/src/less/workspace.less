@@ -1,0 +1,26 @@
+/******************************************************************************
+ *
+ * Copyright (c) 2018, the Perspective Authors.
+ *
+ * This file is part of the Perspective library, distributed under the terms of
+ * the Apache License 2.0.  The full license can be found in the LICENSE file.
+ *
+ */
+ 
+:host {
+    width: 100%;
+    height: 100%;
+
+    .workspace{
+        width: 100%;
+        height: 100%;
+    }
+}
+
+:host(.p-Theme-Material){
+    @import "~@phosphor/widgets/style/index.css";
+    @import "../theme/material/tabbar.less";
+    @import "../theme/material/dockpanel.less";
+    @import "../theme/material/workspace.less";
+    @import "../theme/material/widget.less";
+}

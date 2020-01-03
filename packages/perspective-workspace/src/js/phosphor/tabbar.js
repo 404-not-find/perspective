@@ -9,35 +9,17 @@
 
 import {ArrayExt} from "@phosphor/algorithm";
 import {ElementExt} from "@phosphor/domutils";
-import {Message} from "@phosphor/messaging";
-import {Signal} from "@phosphor/signaling";
-import {TabBar, Widget, Title} from "@phosphor/widgets";
+import {TabBar} from "@phosphor/widgets";
 import {TabBarActions} from "./tabbarrenderer";
 
-export interface TabMaximizeArgs {
-    title: Title<Widget>;
-}
-export class PerspectiveTabBar extends TabBar<Widget> {
-    private __content_node__: HTMLUListElement;
-    private _tabMaximizeRequested: Signal<PerspectiveTabBar, TabMaximizeArgs>;
-    private _toggleConfigRequested: Signal<PerspectiveTabBar, TabMaximizeArgs>;
-
-    constructor(options: TabBar.IOptions<Widget> = {}) {
+export class PerspectiveTabBar extends TabBar {
+    constructor(options = {}) {
         super(options);
-        this._tabMaximizeRequested = new Signal(this);
-        this._toggleConfigRequested = new Signal(this);
+        this._addEventListeners();
         this.__content_node__;
     }
 
-    public get tabMaximizeRequested(): Signal<PerspectiveTabBar, TabMaximizeArgs> {
-        return this._tabMaximizeRequested;
-    }
-
-    public get toggleConfigRequested(): Signal<PerspectiveTabBar, TabMaximizeArgs> {
-        return this._toggleConfigRequested;
-    }
-
-    public onUpdateRequest(msg: Message): void {
+    onUpdateRequest(msg) {
         // NOT INERT!  This is a phosphor bug fix.
         // phosphor/virtualdom keeps a weakmap on contentNode which is later
         // reset - this causes the diff to double some elements.  Memoizing
@@ -47,11 +29,12 @@ export class PerspectiveTabBar extends TabBar<Widget> {
         super.onUpdateRequest(msg);
     }
 
-    public handleEvent(event: MouseEvent): void {
+    handleEvent(event) {
+        this.retargetEvent(event);
         switch (event.type) {
             case "mousedown":
-                const action: string = (event.target as HTMLElement).id;
-                if ([TabBarActions.Maximize as string, TabBarActions.Config].indexOf(action) === -1) {
+                const action = event.target.id;
+                if ([TabBarActions.Maximize, TabBarActions.Config].indexOf(action) === -1) {
                     break;
                 }
                 const tabs = this.contentNode.children;
@@ -69,24 +52,43 @@ export class PerspectiveTabBar extends TabBar<Widget> {
                 if (action === TabBarActions.Maximize) {
                     this._tabMaximizeRequested && this._tabMaximizeRequested.emit({title});
                 } else {
-                    this._toggleConfigRequested.emit({title});
+                    title.owner.toggleConfig();
                 }
                 break;
         }
         super.handleEvent(event);
     }
 
-    public onResize(msg: Widget.ResizeMessage): void {
+    onResize(msg) {
         super.onResize(msg);
         this.checkCondensed(msg);
     }
 
-    public checkCondensed(msg: Widget.ResizeMessage): void {
+    checkCondensed(msg) {
         const approxWidth = (msg ? msg.width : this.node.offsetWidth) / this.contentNode.children.length;
         if (approxWidth < 400) {
             this.node.classList.add("condensed");
         } else {
             this.node.classList.remove("condensed");
         }
+    }
+
+    /**
+     * Shadow dom targets events at the host, not the clicked element, which
+     * Phosphor dislikes.  This makes the event look like it is not crossing
+     * the ShadowDom boundary.
+     *
+     */
+    retargetEvent(event) {
+        Object.defineProperty(event, "target", {value: event.composedPath()[0], enumerable: true});
+        return event;
+    }
+
+    _addEventListeners() {
+        this.node.addEventListener("contextmenu", event => {
+            const widget = this.titles[0].owner;
+            this.parent.parent.showContextMenu(widget, event);
+            event.preventDefault();
+        });
     }
 }

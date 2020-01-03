@@ -7,24 +7,22 @@
  *
  */
 
-import {h, VirtualElement} from "@phosphor/virtualdom";
+import {h} from "@phosphor/virtualdom";
 import {TabBar} from "@phosphor/widgets";
 
-export enum TabBarActions {
-    Maximize = "maximize",
-    Config = "config"
-}
+export const TabBarActions = {
+    Maximize: "maximize",
+    Config: "config"
+};
 
 export class PerspectiveTabBarRenderer extends TabBar.Renderer {
-    private maximized = false;
-
-    constructor(maximized: boolean) {
+    constructor(maximized) {
         super();
         this.maximized = maximized;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public renderTab(data: TabBar.IRenderData<any>): VirtualElement {
+    renderTab(data) {
         const title = data.title.caption;
         const key = this.createTabKey(data);
         const style = this.createTabStyle(data);
@@ -48,7 +46,7 @@ export class PerspectiveTabBarRenderer extends TabBar.Renderer {
         );
     }
 
-    public renderConfigIcon(): VirtualElement {
+    renderConfigIcon() {
         return h.div({className: "p-TabBar-tabConfigIcon", id: TabBarActions.Config});
     }
 }

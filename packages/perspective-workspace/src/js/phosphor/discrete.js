@@ -7,29 +7,41 @@
  *
  */
 
-import {DockPanel, SplitPanel, Widget} from "@phosphor/widgets";
+import {DockPanel, SplitPanel} from "@phosphor/widgets";
 import {toArray} from "@phosphor/algorithm";
 
 const DISCRETE_STEP_SIZE = 1;
 
-function cloneMouseEvent(x: number, y: number, e: MouseEvent): MouseEvent {
+function cloneMouseEvent(x, y, event) {
     const evt = document.createEvent("MouseEvent");
-    evt.initMouseEvent(e.type, true, e.cancelable, e.view, e.detail, e.screenX, e.screenY, x, y, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
+    evt.initMouseEvent(
+        event.type,
+        true,
+        event.cancelable,
+        event.view,
+        event.detail,
+        event.screenX,
+        event.screenY,
+        x,
+        y,
+        event.ctrlKey,
+        event.altKey,
+        event.shiftKey,
+        event.metaKey,
+        event.button,
+        event.relatedTarget
+    );
     return evt;
 }
 
 class DiscreteContext {
-    _offset_drag_start: {[key: string]: number};
-    _offset_drag_current: {[key: string]: number};
-    _rect: ClientRect;
-
-    _clamp(orient: "width" | "height", client: number): number | undefined {
+    _clamp(orient, client) {
         const margin = {width: 300, height: 200}[orient];
         const [min, max] = [margin, this._rect[orient] - margin];
         return client < min ? min : client > max ? max : undefined;
     }
 
-    _block_move(key: "x" | "y", client: number): number {
+    _block_move(key, client) {
         const val = this._offset_drag_start[key];
         const old = this._offset_drag_current[key];
         const method = client < old ? "ceil" : "floor";
@@ -37,7 +49,7 @@ class DiscreteContext {
         return Math[method](diff / DISCRETE_STEP_SIZE) * DISCRETE_STEP_SIZE + val;
     }
 
-    _check_prev(clientX: number, clientY: number): boolean {
+    _check_prev(clientX, clientY) {
         const {x: old_clientX, y: old_clientY} = this._offset_drag_current;
         if (clientX !== old_clientX || clientY !== old_clientY) {
             this._offset_drag_current = {x: clientX, y: clientY};
@@ -46,7 +58,7 @@ class DiscreteContext {
         return false;
     }
 
-    calculate_move({clientX, clientY}: MouseEvent): {x: number; y: number} | void {
+    calculate_move({clientX, clientY}) {
         clientX -= this._rect.left;
         clientY -= this._rect.top;
         const blockX = this._block_move("x", clientX);
@@ -58,7 +70,7 @@ class DiscreteContext {
         }
     }
 
-    constructor(x: number, y: number, rect: ClientRect) {
+    constructor(x, y, rect) {
         this._rect = rect;
         this._offset_drag_start = this._offset_drag_current = {
             x: x - rect.left,
@@ -67,15 +79,13 @@ class DiscreteContext {
     }
 }
 
-function extend(base: any, handle: string): any {
+function extend(base, handle) {
     return class extends base {
-        private context: DiscreteContext;
-
-        handleEvent(event: MouseEvent): void {
+        handleEvent(event) {
             switch (event.type) {
                 case "mousedown":
                     {
-                        const elem = event.target as HTMLElement;
+                        const elem = event.target;
                         if (!elem.classList.contains(handle)) {
                             break;
                         }
@@ -86,7 +96,7 @@ function extend(base: any, handle: string): any {
                         }
                         this.addClass("resizing");
                         const {clientX, clientY} = event;
-                        this._offset_target = elem as HTMLElement;
+                        this._offset_target = elem;
                         this._offset_target.classList.add("resizing");
                         this.context = new DiscreteContext(clientX, clientY, this.node.getBoundingClientRect());
                     }
@@ -99,7 +109,7 @@ function extend(base: any, handle: string): any {
                         event.stopPropagation();
                         const update = this.context.calculate_move(event);
                         if (update) {
-                            const new_event = cloneMouseEvent(update.x, update.y, event as MouseEvent);
+                            const new_event = cloneMouseEvent(update.x, update.y, event);
                             super.handleEvent(new_event);
                         }
                         return;
@@ -122,9 +132,9 @@ function extend(base: any, handle: string): any {
     };
 }
 
-export class DiscreteDockPanel extends (extend(DockPanel, "p-DockPanel-handle") as typeof DockPanel) {}
-export class DiscreteSplitPanel extends (extend(SplitPanel, "p-SplitPanel-handle") as typeof SplitPanel) {
-    onResize(msg: Widget.ResizeMessage): void {
+export class DiscreteDockPanel extends extend(DockPanel, "p-DockPanel-handle") {}
+export class DiscreteSplitPanel extends extend(SplitPanel, "p-SplitPanel-handle") {
+    onResize(msg) {
         for (const widget of toArray(this.widgets)) {
             widget.node.style.minWidth = `300px`;
             widget.node.style.minHeight = `200px`;

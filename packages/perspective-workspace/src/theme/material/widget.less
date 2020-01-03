@@ -1,0 +1,33 @@
+/******************************************************************************
+ *
+ * Copyright (c) 2018, the Perspective Authors.
+ *
+ * This file is part of the Perspective library, distributed under the terms of
+ * the Apache License 2.0.  The full license can be found in the LICENSE file.
+ *
+ */
+
+ @import (reference) "~@finos/perspective-viewer/src/themes/material-dense.less";
+ @import (reference) "~@finos/perspective-viewer/src/themes/material-dense.dark.less";
+
+@border-color: 1px solid #eaeaea;
+
+.p-DockPanel-widget{
+    border: @border-color;
+    border-width: 0px !important;
+    min-width: 300px;
+    min-height: 200px;
+}
+
+.p-Master{
+    .perspective-viewer-material-dense-dark();
+    --settings-button--content: "expand_more" !important;
+}
+
+.p-Detail{
+    .perspective-viewer-material-dense();
+    min-width: 300px;
+    min-height: 200px;
+    --settings-button--content: "";
+    --plugin--border: 1px solid #eaeaea;
+}
