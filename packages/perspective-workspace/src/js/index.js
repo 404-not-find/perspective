@@ -13,7 +13,9 @@ import {bindTemplate} from "@finos/perspective-viewer/dist/esm/utils";
 import {PerspectiveWorkspace} from "./phosphor";
 import {MessageLoop} from "@phosphor/messaging";
 import {Widget} from "@phosphor/widgets";
-import "!!style-loader!css-loader!less-loader!../less/index.less";
+
+import viewerStyle from "../less/viewer.less";
+import menuStyle from "../less/menu.less";
 
 @bindTemplate(template, style) // eslint-disable-next-line no-unused-vars
 class PerspectiveWorkspaceElement extends HTMLElement {
@@ -43,12 +45,16 @@ class PerspectiveWorkspaceElement extends HTMLElement {
 
     connectedCallback() {
         // make theme configurable
-        this.classList.add("p-Theme-Material");
+        this.classList.add("p-Theme-Default");
 
         this.side = this.side || "left";
 
         const container = this.shadowRoot.querySelector("#container");
         this.workspace = new PerspectiveWorkspace(this, {side: this.side});
+
+        injectStyles("workspace-injected-stylesheet", this, viewerStyle);
+        // check we only insert one of these
+        injectStyles("workspace-menu-injected-stylesheet", document.body, menuStyle);
 
         MessageLoop.sendMessage(this.workspace, Widget.Msg.BeforeAttach);
         container.insertBefore(this.workspace.node, null);
@@ -59,3 +65,10 @@ class PerspectiveWorkspaceElement extends HTMLElement {
         };
     }
 }
+
+const injectStyles = (name, element, style) => {
+    const node = document.createElement("style");
+    node.id = name;
+    node.innerHTML = style;
+    element.appendChild(node);
+};

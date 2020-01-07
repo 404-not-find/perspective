@@ -12,6 +12,21 @@
 
 @border-color: 1px solid #eaeaea;
 
+.p-Master{
+    --settings-button--content: var(--open-settings-button--content, "\1F527");
+    .perspective-viewer-material-dark-base();
+ }
+
+.p-Master[settings] {
+    --settings-button--content: var(--close-settings-button--content, "\1F527");
+}
+ 
+ .p-Detail{
+    min-width: 300px;
+    min-height: 200px;
+    --settings-button--content: "";
+ }
+
 .p-DockPanel-widget{
     border: @border-color;
     border-width: 0px !important;
@@ -19,13 +34,7 @@
     min-height: 200px;
 }
 
-.p-Master{
-    .perspective-viewer-material-dense-dark();
-    --settings-button--content: "expand_more" !important;
-}
-
 .p-Detail{
-    .perspective-viewer-material-dense();
     min-width: 300px;
     min-height: 200px;
     --settings-button--content: "";

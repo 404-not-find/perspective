@@ -10,32 +10,20 @@
 @import "~@finos/perspective-viewer/src/less/variables.less";
 
 .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:before {
-    content: "\E14C";
-    font-family: "Material Icons";
+    content: var(--close-button--content, "\2715");
+    font-family: var(--settings--font-family, "Arial");
 }
 
-.p-TabBar-tab.p-mod-maximize > .p-TabBar-tabMaximizeIcon {
-    display: none;
+.p-TabBar-tab > .p-TabBar-tabConfigIcon:before {
+    content: var(--open-settings-button--content, "\1F527");
+    font-family: var(--settings--font-family, "Arial");
 }
 
-
-.bottom .p-TabBar-tab > .p-TabBar-tabMaximizeIcon {
-    display: none;
+.p-TabBar-tab.p-mod-current.settings_open > .p-TabBar-tabConfigIcon:before {
+    content: var(--close-settings-button--content, "\1F527");
+    font-family: var(--settings--font-family, "Arial");
 }
 
-.p-TabBar-tab.p-mod-current.p-mod-maximize > .p-TabBar-tabMaximizeIcon {
-    display: block;
-}
-
-.p-TabBar-tab.p-mod-maximize > .p-TabBar-tabMaximizeIcon:before {
-    content: "\e5d0";
-    font-family: "Material Icons";
-}
-
-.p-TabBar-tab.p-mod-minimize > .p-TabBar-tabMaximizeIcon:before {
-    content: "\e5d1";
-    font-family: "Material Icons";
-}
 
 .p-TabBar-tab > .p-TabBar-tabConfigIcon {
     opacity: 0;
@@ -47,13 +35,10 @@
     pointer-events: all;
 }
 
-.p-TabBar-tab > .p-TabBar-tabConfigIcon:before {
-    content: "expand_more";
-    font-family: "Material Icons";
-}
+
 
 .p-mod-current {
-    .p-TabBar-tabConfigIcon, .p-TabBar-tabMaximizeIcon, .p-TabBar-tabCloseIcon {
+    .p-TabBar-tabConfigIcon, .p-TabBar-tabCloseIcon {
         color: #999;
     }
 }
@@ -161,9 +146,7 @@
     border-color: #eaeaea;
 }
 
-.p-TabBar-tab.p-mod-current.settings_open > .p-TabBar-tabConfigIcon:before {
-    content: "expand_less";
-}
+
 
  .p-TabBar-content > .p-TabBar-tab,
  .p-TabBar-content > .p-TabBar-tab.p-mod-current.settings_open {
@@ -205,39 +188,6 @@
        background: none;
        transition: none;
     }  
-}
-
- .p-TabBar-content > .p-TabBar-tab {
-    .p-TabBar-tabLinkIcon:before {
-        display: none;
-    }
-}
-
- .p-TabBar-content > .p-TabBar-tab.settings_open.p-mod-current {
-    .p-TabBar-tabLinkIcon:before {
-        display: block;
-    }
-}
-
-.p-TabBar-tab.p-mod-maximize > .p-TabBar-tabMaximizeIcon
-
-.p-TabBar.linked {
-    display: inline
-}
-
-.p-TabBar.linked > .p-TabBar-content > .p-TabBar-tab {
-    .p-TabBar-tabLinkIcon:before {
-        display: block;
-        content: "link";
-        font-family: "Material Icons";
-        transition: color 0.2s;
-        &:hover {
-            color: @blue800;
-        }
-    }
-    .p-TabBar-tabLinkIcon {
-        color: #999;
-    }
 }
 
  .p-TabBar-content > .p-TabBar-tab.p-mod-current.perspective_updating {
@@ -322,12 +272,6 @@
     padding-right: 12px;
 }
 
-.p-TabBar-tabLinkIcon,
-.p-TabBar-tabMaximizeIcon {
-    cursor: pointer !important;
-    line-height: 22px !important;
-    padding-right: 5px;
-}
 
 .bottom .p-TabBar-tab {
     flex-basis: 10000px !important;

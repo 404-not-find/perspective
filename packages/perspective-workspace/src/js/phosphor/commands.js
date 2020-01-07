@@ -12,28 +12,28 @@ import {CommandRegistry} from "@phosphor/commands";
 export const createCommands = workspace => {
     const commands = new CommandRegistry();
 
-    commands.addCommand("perspective:export", {
+    commands.addCommand("workspace:export", {
         execute: args => args.widget.viewer.download(),
         iconClass: "p-MenuItem-export",
         label: "Export CSV",
         mnemonic: 0
     });
 
-    commands.addCommand("perspective:copy", {
+    commands.addCommand("workspace:copy", {
         execute: args => args.widget.viewer.copy(),
         iconClass: "p-MenuItem-copy",
         label: "Copy To Clipboard",
         mnemonic: 0
     });
 
-    commands.addCommand("perspective:reset", {
+    commands.addCommand("workspace:reset", {
         execute: args => args.widget.viewer.reset(),
         iconClass: "p-MenuItem-reset",
         label: "Reset",
         mnemonic: 0
     });
 
-    commands.addCommand("perspective:duplicate", {
+    commands.addCommand("workspace:duplicate", {
         execute: ({widget}) => workspace.duplicate(widget),
         iconClass: "p-MenuItem-duplicate",
         label: "Duplicate",
@@ -47,17 +47,19 @@ export const createCommands = workspace => {
         mnemonic: 0
     });
 
-    commands.addCommand("workspace:toggle-single-document", {
+    commands.addCommand("workspace:maximize", {
         execute: args => workspace.toggleSingleDocument(args.widget),
-        isVisible: args => args.widget.parent === workspace.dockpanel,
-        iconClass: () => {
-            if (workspace.dockpanel.mode !== "single-document") {
-                return "p-MenuItem-maximize";
-            } else {
-                return "p-MenuItem-minimize";
-            }
-        },
-        label: () => (workspace.dockpanel.mode === "single-document" ? "Minimize" : "Maximize"),
+        isVisible: args => args.widget.parent === workspace.dockpanel && workspace.dockpanel.mode !== "single-document",
+        iconClass: "p-MenuItem-maximize",
+        label: () => "Maximize",
+        mnemonic: 0
+    });
+
+    commands.addCommand("workspace:minimize", {
+        execute: args => workspace.toggleSingleDocument(args.widget),
+        isVisible: args => args.widget.parent === workspace.dockpanel && workspace.dockpanel.mode === "single-document",
+        iconClass: "p-MenuItem-minimize",
+        label: () => "Minimize",
         mnemonic: 0
     });
     return commands;

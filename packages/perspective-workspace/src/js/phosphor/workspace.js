@@ -10,6 +10,7 @@
 import {Panel} from "@phosphor/widgets";
 import {PerspectiveDockPanel} from "./dockpanel";
 import {Menu} from "@phosphor/widgets";
+import {MenuRenderer} from "./menu";
 import {createCommands} from "./commands";
 
 import {PerspectiveViewerWidget} from "./widget";
@@ -34,12 +35,13 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
 
         this.addWidget(this.boxPanel);
 
+        this.element = element;
+        this.side = options.side || "left";
+
         this.listeners = new WeakMap();
         this.tables = new Map();
         this.commands = createCommands(this);
-
-        this.element = element;
-        this.side = options.side || "left";
+        this.menuRenderer = new MenuRenderer(this.element);
     }
 
     addTable(name, datasource) {
@@ -204,17 +206,18 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
      */
 
     createContextMenu(widget) {
-        const contextMenu = new Menu({commands: this.commands});
+        const contextMenu = new Menu({commands: this.commands, renderer: this.menuRenderer});
 
-        contextMenu.addItem({command: "workspace:toggle-single-document", args: {widget}});
-        contextMenu.addItem({command: "perspective:duplicate", args: {widget}});
+        contextMenu.addItem({command: "workspace:maximize", args: {widget}});
+        contextMenu.addItem({command: "workspace:minimize", args: {widget}});
+        contextMenu.addItem({command: "workspace:duplicate", args: {widget}});
         contextMenu.addItem({command: "workspace:master", args: {widget}});
 
         contextMenu.addItem({type: "separator"});
 
-        contextMenu.addItem({command: "perspective:export", args: {widget}});
-        contextMenu.addItem({command: "perspective:copy", args: {widget}});
-        contextMenu.addItem({command: "perspective:reset", args: {widget}});
+        contextMenu.addItem({command: "workspace:export", args: {widget}});
+        contextMenu.addItem({command: "workspace:copy", args: {widget}});
+        contextMenu.addItem({command: "workspace:reset", args: {widget}});
         return contextMenu;
     }
 
