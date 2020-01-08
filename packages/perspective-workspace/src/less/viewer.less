@@ -1,22 +1,13 @@
-@import (reference) "~@finos/perspective-viewer/src/themes/material-dense.less";
-@import (reference) "~@finos/perspective-viewer/src/themes/material-dense.dark.less";
-
 @border-color: 1px solid #eaeaea;
 
 .p-Master{
-   --settings-button--content: var(--open-settings-button--content, "\1F527");
-   .perspective-viewer-material-dark-base();
+   --settings-button--content: var(--open-settings-button--content, "\1F527") !important;
 }
 
 .p-Master[settings] {
-   --settings-button--content: var(--close-settings-button--content, "\1F527");
+   --settings-button--content: var(--close-settings-button--content, "\1F527") !important;;
 }
 
-.p-Detail{
-   min-width: 300px;
-   min-height: 200px;
-   --settings-button--content: "";
-}
 
 .p-DockPanel-widget{
    border: @border-color;
@@ -28,12 +19,11 @@
 .p-Detail{
    min-width: 300px;
    min-height: 200px;
-   --settings-button--content: "";
+   --settings-button--content: "" !important;
    --plugin--border: 1px solid #eaeaea;
 }
 
 perspective-viewer {
-    .perspective-viewer-material-dense();
       flex: 1;
       display: flex;
       align-items: center;
@@ -46,12 +36,4 @@ perspective-viewer {
       bottom: 0px;
       overflow: visible !important;
       font-family: "Open Sans", Arial, sans-serif;
-      --hypergrid--padding: 12px 12px 12px 12px;
-      --hypergrid-row--height: 20px;
-      --hypergrid-gridline--color: #ddd;
-      --side_panel--padding: 12px 12px 12px 8px;
-      --top_panel--padding: 0px 0px 12px 0px;
-      --column-drop-container--margin: 12px 12px 0px 0px;
-      --column-container--margin: 12px 0px 0px 0px;
-      --row_draggable--animation: none;
     }

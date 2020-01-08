@@ -17,8 +17,10 @@ export class MenuRenderer extends Menu.Renderer {
     }
     renderIcon(data) {
         let className = this.createIconClass(data);
-        const name = data.item.command.split(":")[1];
-        const content = getComputedStyle(this.workspace).getPropertyValue(`--menu-${name}--content`);
+        const name = data.item.command.split(":").pop();
+        const content = getComputedStyle(this.workspace)
+            .getPropertyValue(`--menu-${name}--content`)
+            .replace(/['"]+/g, "");
         return h.div({className, content}, data.item.iconLabel);
     }
 }

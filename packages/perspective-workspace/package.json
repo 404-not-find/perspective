@@ -19,7 +19,7 @@
         "build:webpack:cjs": "webpack --color --config config/cjs.config.js",
         "build:webpack:umd": "webpack --color --config config/umd.config.js",
         "build:webpack": "npm-run-all build:webpack:cjs build:webpack:umd",
-        "build": "npm-run-all --silent build:babel build:webpack:cjs build:webpack:umd",
+        "build": "npm-run-all --silent build:babel build:webpack:cjs build:webpack:umd build:styles",
         "clean": "rimraf dist",
         "test:build": "cpx \"test/html/*\" dist/umd",
         "watch": "webpack --color --watch --config config/watch.config.js",

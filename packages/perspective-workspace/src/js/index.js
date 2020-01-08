@@ -10,12 +10,11 @@
 import style from "../less/workspace.less";
 import template from "../html/workspace.html";
 import {bindTemplate} from "@finos/perspective-viewer/dist/esm/utils";
-import {PerspectiveWorkspace} from "./phosphor";
+import {PerspectiveWorkspace} from "./workspace";
 import {MessageLoop} from "@phosphor/messaging";
 import {Widget} from "@phosphor/widgets";
 
-import viewerStyle from "../less/viewer.less";
-import menuStyle from "../less/menu.less";
+import injectedStyles from "../less/injected.less";
 
 @bindTemplate(template, style) // eslint-disable-next-line no-unused-vars
 class PerspectiveWorkspaceElement extends HTMLElement {
@@ -52,9 +51,8 @@ class PerspectiveWorkspaceElement extends HTMLElement {
         const container = this.shadowRoot.querySelector("#container");
         this.workspace = new PerspectiveWorkspace(this, {side: this.side});
 
-        injectStyles("workspace-injected-stylesheet", this, viewerStyle);
-        // check we only insert one of these
-        injectStyles("workspace-menu-injected-stylesheet", document.body, menuStyle);
+        // TODO: check we only insert one of these
+        this._injectStyle = injectStyles("workspace-injected-stylesheet", injectedStyles);
 
         MessageLoop.sendMessage(this.workspace, Widget.Msg.BeforeAttach);
         container.insertBefore(this.workspace.node, null);
@@ -64,11 +62,16 @@ class PerspectiveWorkspaceElement extends HTMLElement {
             this.workspace.update();
         };
     }
+
+    disconnectedCallback() {
+        document.head.removeChild(this._injectStyle);
+    }
 }
 
-const injectStyles = (name, element, style) => {
+const injectStyles = (name, style) => {
     const node = document.createElement("style");
     node.id = name;
     node.innerHTML = style;
-    element.appendChild(node);
+    document.head.appendChild(node);
+    return node;
 };

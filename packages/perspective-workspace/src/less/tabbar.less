@@ -279,11 +279,9 @@
 }
 
  .p-TabBar-content > .p-TabBar-tab.p-mod-current {
-    background-color: white;
-    color: #666 !important;
-    border-right: @border-color;
-    border-left: @border-color;
-    border-top: @border-color;
+    color: var(--detail-tabbar--color, #666) !important;
+    border: var(--detail-tabbar--border, @border-color);
+    background-color: var(--detail-tabbar--background-color, white);
     height: 26px !important;
     max-height: 26px !important;
 }

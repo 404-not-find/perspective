@@ -9,10 +9,11 @@
  
 :host {
     @import "~@phosphor/widgets/style/index.css";
-    @import "../theme/material/tabbar.less";
-    @import "../theme/material/dockpanel.less";
-    @import "../theme/material/workspace.less";
-    @import "../theme/material/widget.less";
+    @import "./tabbar.less";
+    @import "./dockpanel.less";
+    @import "./widget.less";
+
+    background-color: var(--workspace--background-color, #eee);
 
     width: 100%;
     height: 100%;
@@ -21,4 +22,13 @@
         width: 100%;
         height: 100%;
     }
+    .p-SplitPanel{
+        height: 100%;
+        width: 100%;
+    }
+    
+    div.p-SplitPanel-handle {
+      background-color: var(--master-divider--background-color);
+    }
+  
 }
