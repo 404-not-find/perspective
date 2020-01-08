@@ -266,14 +266,16 @@ export class PerspectiveWorkspace extends DiscreteSplitPanel {
             layout.master.sizes && this.masterpanel.setRelativeSizes(layout.master.sizes);
         }
 
-        const detailLayout = PerspectiveDockPanel.mapWidgets(widgetConfig => {
-            const widget = this.createWidget({
-                title: widgetConfig.name,
-                table: this.getTable(widgetConfig.table),
-                config: widgetConfig
-            });
-            return widget;
-        }, layout.detail);
-        this.dockpanel.restoreLayout(detailLayout);
+        if (layout.detail) {
+            const detailLayout = PerspectiveDockPanel.mapWidgets(widgetConfig => {
+                const widget = this.createWidget({
+                    title: widgetConfig.name,
+                    table: this.getTable(widgetConfig.table),
+                    config: {master: false, ...widgetConfig}
+                });
+                return widget;
+            }, layout.detail);
+            this.dockpanel.restoreLayout(detailLayout);
+        }
     }
 }
